@@ -142,10 +142,11 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    if (NULL == rayinfo) return 1;
    texto = retorna_atributos(rayinfo, "refid");
    texto2 = retorna_atributos(rayinfo, "blobid");
-   s_how[scn].blob_startangle_id = -1;
-   s_how[scn].blob_stopangle_id = -1;
-   s_how[scn].blob_timestamp_id = -1;
-   s_how[scn].blob_numpulses_id = -1;   
+   s_how[scn].blob_startangle_id = 9999;
+   s_how[scn].blob_stopangle_id = 9999;
+   s_how[scn].blob_timestamp_id = 9999;
+   s_how[scn].blob_numpulses_id = 9999;
+   s_how[scn].blob_txpower_id = 9999;  
    if (0 == strcmp(texto, "startangle"))
       {
       s_how[scn].blob_startangle_id = atoi(texto2);
@@ -161,6 +162,10 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    if (0 == strcmp(texto, "timestamp"))
       {
       s_how[scn].blob_timestamp_id = atoi(texto2);
+      }
+   if (0 == strcmp(texto, "txpower"))
+      {
+      s_how[scn].blob_txpower_id = atoi(texto2);
       }
    /*procura por outros atributos de rayinfo*/
    
@@ -188,6 +193,10 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
          if (0 == strcmp(texto, "timestamp"))
             {
             s_how[scn].blob_timestamp_id = atoi(texto2);
+            }
+         if (0 == strcmp(texto, "txpower"))
+            {
+            s_how[scn].blob_txpower_id = atoi(texto2);
             }
          }
       }
@@ -377,10 +386,11 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
       texto = retorna_atributos(rayinfo, "refid");
       texto2 = retorna_atributos(rayinfo, "blobid");
 
-      s_how[scn].blob_startangle_id = -1;
-      s_how[scn].blob_stopangle_id = -1;
-      s_how[scn].blob_timestamp_id = -1;
-      s_how[scn].blob_numpulses_id = -1;
+      s_how[scn].blob_startangle_id = 9999;
+      s_how[scn].blob_stopangle_id = 9999;
+      s_how[scn].blob_timestamp_id = 9999;
+      s_how[scn].blob_numpulses_id = 9999;
+      s_how[scn].blob_txpower_id = 9999;
       
       if (0 == strcmp(texto, "startangle"))
          {
@@ -424,6 +434,10 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
             if (0 == strcmp(texto, "timestamp"))
                {
                s_how[scn].blob_timestamp_id = atoi(texto2);
+               }
+            if (0 == strcmp(texto, "txpower"))
+               {
+               s_how[scn].blob_txpower_id = atoi(texto2);
                }
             }
          }

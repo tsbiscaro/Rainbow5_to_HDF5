@@ -62,6 +62,12 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
       {
       return 1;
       }
+
+
+   memset(filename, 0, sizeof(filename));
+   
+   strcpy(filename, basename(nome));
+   strncpy(v_how->arq_original, filename, 14);
    
    for (arq = 0; arq < num_arquivos; arq++)
       {
@@ -169,7 +175,8 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                {
                depth = 16;
                }
-            else if (blobid == s_how[slice].blob_timestamp_id)
+            else if ((blobid == s_how[slice].blob_timestamp_id) ||
+                     (blobid == s_how[slice].blob_txpower_id))
                {
                depth = 32;
                }
@@ -213,13 +220,15 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                
                if (32 == depth)
                   {
-                  /*16 bit data (put on Little Endian order)*/
+                  /*32 bit data (put on Little Endian order)*/
                   buffer_32 = (unsigned int *) malloc(size_blob);
                   memcpy(buffer_32, bufOut.data(), size_blob);
                   for (i = 0; i < size_blob/4; i++)
                      {
-                     buffer_32[i] = ((buffer_32[i] << 8) & 0xFF00FF00 ) |
-                        ((buffer_32[i] >> 8) & 0xFF00FF);                     
+                     buffer_32[i] = ((buffer_32[i]>>24) & 0xff) | // move byte 3 to byte 0
+                        ((buffer_32[i]<<8) & 0xff0000) | // move byte 1 to byte 2
+                        ((buffer_32[i]>>8) & 0xff00) | // move byte 2 to byte 1
+                        ((buffer_32[i]<<24) & 0xff000000); // byte 0 to byte 3
                      }
                   }
                /*END OF C++ part of the code*/
@@ -262,7 +271,7 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                   for (i = 0; i < p_slice[slice].rays; i++)
                      {
                      s_how[slice].r_header[i].timestamp =
-                        (long int) buffer_32[i];
+                        (unsigned int) buffer_32[i];
                      }
                   }
                

@@ -1,6 +1,5 @@
 #include "rainbow5_to_hdf5.h"
 #include <stdlib.h>
-#define FILE  "h5_from_rainbow5.h5"
 
 
 int write_hdf5(struct volume_how *v_how,
@@ -28,6 +27,8 @@ int write_hdf5(struct volume_how *v_how,
    unsigned short int **data_U16;
    unsigned char temp_8[MAX_RAYS][MAX_BINS];
    unsigned short int temp_16[MAX_RAYS][MAX_BINS];
+
+   char filename[1024];
    
 /*   
    memset(&v_how, 0, sizeof(struct volume_how));
@@ -41,12 +42,15 @@ int write_hdf5(struct volume_how *v_how,
    v_what->sets = 12;
 */
 
+   memset(filename, 0, sizeof(filename));
+   sprintf(filename, "%s-%s.HDF5", v_how->host_name, v_how->arq_original);
+   
    /*cria o space*/
    space = H5Screate_simple (1, &dims, NULL);
    /*cria o arquivo*/
    fpid = H5Pcreate (H5P_FILE_ACCESS);
    status = H5Pset_libver_bounds (fpid, H5F_LIBVER_LATEST, H5F_LIBVER_LATEST);
-   file = H5Fcreate(FILE, H5F_ACC_TRUNC, H5P_DEFAULT, fpid);
+   file = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, fpid);
    
    /**********************escreve o HOW do volume************************/
    how = H5Gcreate(file, "/how", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -97,7 +101,7 @@ int write_hdf5(struct volume_how *v_how,
       memset(nome_scan, 0, sizeof(nome_scan));
       sprintf(nome_scan, "scan%d", i);
 
-      file = H5Fopen(FILE, H5F_ACC_RDWR, fpid); 
+      file = H5Fopen(filename, H5F_ACC_RDWR, fpid); 
       scan[i] = H5Gcreate(file, nome_scan, H5P_DEFAULT, H5P_DEFAULT,
                           H5P_DEFAULT);
 
@@ -354,19 +358,34 @@ int write_hdf5(struct volume_how *v_how,
       status = H5Tinsert (mtype, "azimuth_start",
                           HOFFSET (struct ray_header, azimuth_start),
                           H5T_NATIVE_DOUBLE);
-      status = H5Tinsert (mtype, "azimuth_stop",
-                          HOFFSET (struct ray_header, azimuth_stop),
-                          H5T_NATIVE_DOUBLE);
+      if (9999 != s_how[i].blob_stopangle_id)
+         {   
+         status = H5Tinsert (mtype, "azimuth_stop",
+                             HOFFSET (struct ray_header, azimuth_stop),
+                             H5T_NATIVE_DOUBLE);
+         }
+      
       status = H5Tinsert (mtype, "elevation_start",
                           HOFFSET (struct ray_header, elevation_start),
                           H5T_NATIVE_DOUBLE);
       status = H5Tinsert (mtype, "elevation_stop",
                           HOFFSET (struct ray_header, elevation_stop),
                           H5T_NATIVE_DOUBLE);
-      status = H5Tinsert (mtype, "timestamp",
-                          HOFFSET (struct ray_header, timestamp),
-                          H5T_NATIVE_LONG);
-      /*
+      
+      if (9999 != s_how[i].blob_timestamp_id)
+         {   
+         status = H5Tinsert (mtype, "timestamp",
+                             HOFFSET (struct ray_header, timestamp),
+                             H5T_NATIVE_INT);
+         }
+      if (9999 != s_how[i].blob_txpower_id)
+         {   
+         status = H5Tinsert (mtype, "txpower",
+                             HOFFSET (struct ray_header, txpower),
+                             H5T_NATIVE_INT);
+         }
+      
+         /*
       * Create the compound datatype for the file.  Because the standard
       * types we are using for the file may have different sizes than
       * the corresponding native types, we must manually calculate the
@@ -375,14 +394,27 @@ int write_hdf5(struct volume_how *v_how,
       offs = 0;
       ftype = H5Tcreate (H5T_COMPOUND, sizeof(struct ray_header));
       status = H5Tinsert (ftype, "azimuth_start", 0, H5T_NATIVE_DOUBLE);
-      status = H5Tinsert (ftype, "azimuth_stop",
-                          ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
+      if (9999 != s_how[i].blob_stopangle_id)
+         {   
+         status = H5Tinsert (ftype, "azimuth_stop",
+                             ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
+         }
+      
       status = H5Tinsert (ftype, "elevation_start",
                           ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
       status = H5Tinsert (ftype, "elevation_stop",
                           ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
-      status = H5Tinsert (ftype, "timestamp",
-                          ++offs*sizeof(double), H5T_NATIVE_LONG);
+      
+      if (9999 != s_how[i].blob_timestamp_id)
+         {   
+         status = H5Tinsert (ftype, "timestamp",
+                             ++offs*sizeof(double), H5T_NATIVE_INT);
+         }
+      if (9999 != s_how[i].blob_txpower_id)
+         {   
+         status = H5Tinsert (ftype, "txpower",
+                             ++offs*sizeof(unsigned int), H5T_NATIVE_INT);
+         }
       
       /*
       * Create dataspace.  Setting maximum size to NULL sets the maximum

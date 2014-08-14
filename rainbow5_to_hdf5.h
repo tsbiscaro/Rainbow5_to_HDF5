@@ -50,6 +50,7 @@ struct volume_how
    char sw_version[MAX_STRING];
    char template_name[MAX_STRING];
    char vars_validas[MAX_VARS];
+   char arq_original[MAX_STRING];
    double beamwidth;
    double padding_F[7];
    };
@@ -109,8 +110,9 @@ struct ray_header
    double azimuth_stop;
    double elevation_start;
    double elevation_stop;
-   long int timestamp;
-   long int padding_L[3];
+   unsigned int timestamp;
+   unsigned int txpower;
+   unsigned int padding_UI[2];
    };
 
 
@@ -130,7 +132,8 @@ struct scan_how
    unsigned int blob_stopangle_id;
    unsigned int blob_numpulses_id;
    unsigned int blob_timestamp_id;
-   unsigned int padding_USI[2];
+   unsigned int blob_txpower_id;
+   unsigned int padding_USI[9];
    double angle_step;
    double azi_start;
    double azi_stop;

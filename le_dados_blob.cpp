@@ -274,6 +274,15 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                         (unsigned int) buffer_32[i];
                      }
                   }
+
+               if (blobid == s_how[slice].blob_txpower_id)
+                  {
+                  for (i = 0; i < p_slice[slice].rays; i++)
+                     {
+                     s_how[slice].r_header[i].txpower =
+                        (unsigned int) buffer_32[i];
+                     }
+                  }
                
                if (blobid == s_how[slice].blob_data_id)
                   {

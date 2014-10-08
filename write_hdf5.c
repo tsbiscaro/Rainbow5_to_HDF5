@@ -378,8 +378,10 @@ int write_hdf5(struct volume_how *v_how,
                              HOFFSET (struct ray_header, timestamp),
                              H5T_NATIVE_INT);
          }
+
+      
       if (9999 != s_how[i].blob_txpower_id)
-         {   
+         {
          status = H5Tinsert (mtype, "txpower",
                              HOFFSET (struct ray_header, txpower),
                              H5T_NATIVE_INT);
@@ -410,10 +412,19 @@ int write_hdf5(struct volume_how *v_how,
          status = H5Tinsert (ftype, "timestamp",
                              ++offs*sizeof(double), H5T_NATIVE_INT);
          }
+
       if (9999 != s_how[i].blob_txpower_id)
-         {   
-         status = H5Tinsert (ftype, "txpower",
-                             ++offs*sizeof(unsigned int), H5T_NATIVE_INT);
+         {
+         if (9999 != s_how[i].blob_timestamp_id)
+            {
+            status = H5Tinsert (ftype, "txpower",
+                                ++offs*sizeof(unsigned int), H5T_NATIVE_INT);
+            }
+         else
+            {
+            status = H5Tinsert (ftype, "txpower",
+                                ++offs*sizeof(double), H5T_NATIVE_INT);
+            }
          }
       
       /*

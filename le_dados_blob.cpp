@@ -458,7 +458,8 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
    char arquivo[MAX_LINE_SIZE];
    char diretorio[MAX_LINE_SIZE];
    char file[MAX_LINE_SIZE];
-
+   char tipo[MAX_LINE_SIZE];
+   
    FILE *fp = NULL;
    
    int num_arquivos = 0;
@@ -478,6 +479,7 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
    /*separa o nome do arquivo do nome do diretorio, se houver*/
    memset(arquivo, 0, sizeof(arquivo));
    memset(diretorio, 0, sizeof(diretorio));
+   memset(tipo, 0, sizeof(tipo));
    
    if (NULL != strstr(nome, "/"))
       {
@@ -490,17 +492,36 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
          }
       memcpy(arquivo, &nome[i+1], 16);
       memcpy(diretorio, &nome[0], i);
+      memcpy(tipo, &nome[i+21], 3);
       }
    else
       {
       strncpy(arquivo, nome, 16);
+      strncpy(tipo, &nome[20], 3);
       strcpy(diretorio, ".");
       }
    
    for (i = 0; i < MAX_VARS; i++)
       {
       memset(file, 0, sizeof(file));
-      sprintf(file, "%s/%s%s.vol", diretorio, arquivo, sufixo[i]);
+      if (0 == strcmp(tipo, "ele"))
+         {   
+         sprintf(file, "%s/%s%s.ele", diretorio, arquivo, sufixo[i]);
+         }
+      else if (0 == strcmp(tipo, "vol"))
+         {
+         sprintf(file, "%s/%s%s.vol", diretorio, arquivo, sufixo[i]);
+         }
+      else if (0 == strcmp(tipo, "azi"))
+         {
+         sprintf(file, "%s/%s%s.azi", diretorio, arquivo, sufixo[i]);
+         }
+      else
+         {
+         printf("Formato invalido\n");
+         return -1;
+         }
+      
       fin[i] = NULL;
       fp = fopen(file, "r");
       

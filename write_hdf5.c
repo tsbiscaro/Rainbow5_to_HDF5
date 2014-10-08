@@ -134,9 +134,21 @@ int write_hdf5(struct volume_how *v_how,
       write_attr_uint(how, "unfolding", s_how[i].unfolding);
 
       write_attr_double(how, "angle_step", s_how[i].angle_step);
-      write_attr_double(how, "azi_start", s_how[i].azi_start);
-      write_attr_double(how, "azi_stop", s_how[i].azi_stop);
-      write_attr_double(how, "elevation", s_how[i].elevation);
+      
+      if (0 != strcmp(v_what->object, "PELE"))
+         {   
+         write_attr_double(how, "azi_start", s_how[i].azi_start);
+         write_attr_double(how, "azi_stop", s_how[i].azi_stop);
+         write_attr_double(how, "elevation", s_how[i].elevation);
+         }
+      else
+         {
+         write_attr_double(how, "ele_start", s_how[i].azi_start);
+         write_attr_double(how, "ele_stop", s_how[i].azi_stop);
+         write_attr_double(how, "azimuth", s_how[i].elevation);
+         }
+      
+         
       write_attr_double(how, "pulse_width_us", s_how[i].pulse_width_us);
       write_attr_double(how, "radar_wave_length", s_how[i].radar_wave_length);
       write_attr_double(how, "range", s_how[i].range);
@@ -350,27 +362,64 @@ int write_hdf5(struct volume_how *v_how,
          idx_moments++;
          }
 
-      /*grava o Ray Header*/
+      /*grava o Ray Header para volumes e azimuth_scan (ppi)*/
 
 
       mtype = H5Tcreate (H5T_COMPOUND, sizeof (struct ray_header));
-      
-      status = H5Tinsert (mtype, "azimuth_start",
-                          HOFFSET (struct ray_header, azimuth_start),
-                          H5T_NATIVE_DOUBLE);
-      if (9999 != s_how[i].blob_stopangle_id)
-         {   
-         status = H5Tinsert (mtype, "azimuth_stop",
-                             HOFFSET (struct ray_header, azimuth_stop),
+
+      if (0 != strcmp(v_what->object, "PELE"))
+         {
+         status = H5Tinsert (mtype, "azimuth_start",
+                             HOFFSET (struct ray_header, azimuth_start),
+                             H5T_NATIVE_DOUBLE);
+         if (9999 != s_how[i].blob_stopangle_id)
+            {   
+            status = H5Tinsert (mtype, "azimuth_stop",
+                                HOFFSET (struct ray_header, azimuth_stop),
+                                H5T_NATIVE_DOUBLE);
+            }
+         
+         status = H5Tinsert (mtype, "elevation_start",
+                             HOFFSET (struct ray_header, elevation_start),
+                             H5T_NATIVE_DOUBLE);
+         status = H5Tinsert (mtype, "elevation_stop",
+                             HOFFSET (struct ray_header, elevation_stop),
                              H5T_NATIVE_DOUBLE);
          }
-      
-      status = H5Tinsert (mtype, "elevation_start",
-                          HOFFSET (struct ray_header, elevation_start),
-                          H5T_NATIVE_DOUBLE);
-      status = H5Tinsert (mtype, "elevation_stop",
-                          HOFFSET (struct ray_header, elevation_stop),
-                          H5T_NATIVE_DOUBLE);
+      else
+         /*grava o Ray Header para rhi*/
+         {
+         /*angulo do RHI varia entre -5 e 185*/
+         for (ray = 0; ray < s_how[i].ray_count; ray++)
+            {
+            if (s_how[i].r_header[ray].azimuth_start > 185)
+               {
+               s_how[i].r_header[ray].azimuth_start -= 360;
+               }
+            }
+         
+         status = H5Tinsert (mtype, "elevation_start",
+                             HOFFSET (struct ray_header, azimuth_start),
+                             H5T_NATIVE_DOUBLE);
+
+         if (9999 == s_how[i].blob_stopangle_id)
+            {
+            for (ray = 0; ray < s_how[i].ray_count; ray++)
+               {
+               s_how[i].r_header[ray].azimuth_stop = s_how[i].r_header[ray].azimuth_start;
+               }
+            }
+         
+         status = H5Tinsert (mtype, "elevation_stop",
+                             HOFFSET (struct ray_header, azimuth_stop),
+                             H5T_NATIVE_DOUBLE);
+         status = H5Tinsert (mtype, "azimuth_start",
+                             HOFFSET (struct ray_header, elevation_start),
+                             H5T_NATIVE_DOUBLE);
+         status = H5Tinsert (mtype, "azimuth_stop",
+                             HOFFSET (struct ray_header, elevation_stop),
+                             H5T_NATIVE_DOUBLE);
+         }
       
       if (9999 != s_how[i].blob_timestamp_id)
          {   

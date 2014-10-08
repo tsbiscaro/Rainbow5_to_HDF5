@@ -112,6 +112,14 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
          {
          strcpy(v_what->object, "PVOL");
          }
+      if (0 == strcmp(texto, "ele"))
+         {
+         strcpy(v_what->object, "PELE");
+         }
+      if (0 == strcmp(texto, "azi"))
+         {
+         strcpy(v_what->object, "PAZI");
+         }
       }
    
    /*VOLUME WHERE*/
@@ -358,8 +366,17 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
 
    /*colocar -1 porque nao estamos convertendo uPhiDP*/
    s_what[scn].descriptor_count = MAX_VARS - 1;
+
+   if (0 == strcmp(v_what->object, "PELE"))
+      {
+      strcpy(s_what[scn].scan_type, "RHI");
+      }
+   else
+      {
+      strcpy(s_what[scn].scan_type, "PPI");
+      }
    
-   strcpy(s_what[scn].scan_type, "PPI");
+                    
    strcpy(s_what[scn].product, "SCAN");
 
    for (scn = 1; scn < numele; scn++)

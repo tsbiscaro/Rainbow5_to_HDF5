@@ -187,9 +187,9 @@ int write_hdf5(struct volume_how *v_how,
          dataspace = H5Screate_simple (2, dims_data, NULL);
          /*parametros para compressao do dataset*/
          plist_id  = H5Pcreate (H5P_DATASET_CREATE);
-         cdims[0] = 20;
-         cdims[1] = 20;
-         status = H5Pset_chunk (plist_id, 2, cdims);
+//         cdims[0] = 100;
+//         cdims[1] = 100;
+         status = H5Pset_chunk (plist_id, 2, dims_data);
          status = H5Pset_deflate (plist_id, 8); 
          
          if (0 == strncmp("UV8", dados[i].header[j].format, 3))

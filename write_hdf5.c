@@ -184,12 +184,12 @@ int write_hdf5(struct volume_how *v_how,
          dims_data[1] = s_how[i].bin_count;         
          memset(nome_moment, 0, sizeof(nome_moment));
          sprintf(nome_moment, "moment_%d", idx_moments);
-         dataspace = H5Screate_simple (2, dims_data, NULL);
+
          /*parametros para compressao do dataset*/
          plist_id  = H5Pcreate (H5P_DATASET_CREATE);
-//         cdims[0] = 100;
-//         cdims[1] = 100;
-         status = H5Pset_chunk (plist_id, 2, dims_data);
+         cdims[0] = dims_data[0];
+         cdims[1] = dims_data[1];
+         status = H5Pset_chunk (plist_id, 2, cdims);
          status = H5Pset_deflate (plist_id, 8); 
          
          if (0 == strncmp("UV8", dados[i].header[j].format, 3))
@@ -263,11 +263,12 @@ int write_hdf5(struct volume_how *v_how,
                   }
                }
             
-            
+            dataspace = H5Screate_simple (2, dims_data, NULL);
             dataset = H5Dcreate (scan[i], nome_moment, H5T_STD_U8LE, dataspace,
                                  H5P_DEFAULT, plist_id, H5P_DEFAULT);
             status = H5Dwrite (dataset, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL,
                                H5P_DEFAULT, &data_U8[0][0]);
+            H5Sclose(dataspace);
             if (-1 == status)
                {
                printf("ERRO GRAVANDO %d %d\n", i, j);
@@ -327,14 +328,14 @@ int write_hdf5(struct volume_how *v_how,
                   }
                }
             
-               
-            dataset = H5Dcreate (scan[i], nome_moment, H5T_NATIVE_UINT,
+            dataspace = H5Screate_simple (2, dims_data, NULL);
+            dataset = H5Dcreate (scan[i], nome_moment, H5T_STD_U16LE,
                                  dataspace,
                                  H5P_DEFAULT, plist_id, H5P_DEFAULT);
-            status = H5Dwrite (dataset, H5T_NATIVE_UINT, H5S_ALL, H5S_ALL,
-                               H5P_DEFAULT, *data_U16);
+            status = H5Dwrite (dataset, H5T_NATIVE_USHORT, H5S_ALL, H5S_ALL,
+                               H5P_DEFAULT, &data_U16[0][0]);
+            H5Sclose(dataspace);
             }
-         H5Sclose(dataspace);
          H5Pclose (plist_id);
 
          write_attr_double(dataset, "dyn_range_max",

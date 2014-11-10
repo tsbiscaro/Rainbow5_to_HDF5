@@ -329,13 +329,14 @@ int write_hdf5(struct volume_how *v_how,
                }
             
             dataspace = H5Screate_simple (2, dims_data, NULL);
-            dataset = H5Dcreate (scan[i], nome_moment, H5T_STD_U16LE,
+            dataset = H5Dcreate (scan[i], nome_moment, H5T_NATIVE_USHORT,
                                  dataspace,
                                  H5P_DEFAULT, plist_id, H5P_DEFAULT);
             status = H5Dwrite (dataset, H5T_NATIVE_USHORT, H5S_ALL, H5S_ALL,
-                               H5P_DEFAULT, &data_U16[0][0]);
+                               H5P_DEFAULT, data_U16);
             H5Sclose(dataspace);
             }
+         
          H5Pclose (plist_id);
 
          write_attr_double(dataset, "dyn_range_max",
@@ -374,11 +375,22 @@ int write_hdf5(struct volume_how *v_how,
                              HOFFSET (struct ray_header, azimuth_start),
                              H5T_NATIVE_DOUBLE);
          if (9999 != s_how[i].blob_stopangle_id)
-            {   
+            {
             status = H5Tinsert (mtype, "azimuth_stop",
                                 HOFFSET (struct ray_header, azimuth_stop),
                                 H5T_NATIVE_DOUBLE);
             }
+         else
+            {
+            for (ray = 0; ray < s_how[i].ray_count; ray++)
+               {
+               s_how[i].r_header[ray].azimuth_stop = s_how[i].r_header[ray].azimuth_start;
+               }
+            status = H5Tinsert (mtype, "azimuth_stop",
+                                HOFFSET (struct ray_header, azimuth_stop),
+                                H5T_NATIVE_DOUBLE);
+            }
+         
          
          status = H5Tinsert (mtype, "elevation_start",
                              HOFFSET (struct ray_header, elevation_start),
@@ -446,11 +458,8 @@ int write_hdf5(struct volume_how *v_how,
       offs = 0;
       ftype = H5Tcreate (H5T_COMPOUND, sizeof(struct ray_header));
       status = H5Tinsert (ftype, "azimuth_start", 0, H5T_NATIVE_DOUBLE);
-      if (9999 != s_how[i].blob_stopangle_id)
-         {   
-         status = H5Tinsert (ftype, "azimuth_stop",
-                             ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
-         }
+      status = H5Tinsert (ftype, "azimuth_stop",
+                          ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
       
       status = H5Tinsert (ftype, "elevation_start",
                           ++offs*sizeof(double), H5T_NATIVE_DOUBLE);

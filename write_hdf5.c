@@ -333,7 +333,7 @@ int write_hdf5(struct volume_how *v_how,
                                  dataspace,
                                  H5P_DEFAULT, plist_id, H5P_DEFAULT);
             status = H5Dwrite (dataset, H5T_NATIVE_USHORT, H5S_ALL, H5S_ALL,
-                               H5P_DEFAULT, data_U16);
+                               H5P_DEFAULT, *data_U16);
             H5Sclose(dataspace);
             }
          

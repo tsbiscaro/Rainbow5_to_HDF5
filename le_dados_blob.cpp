@@ -126,6 +126,16 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
             if (strcmp(tmp_str, "RhoHV") == 0)
                p_slice[slice].var = VAR_RHO;
 
+            strcpy(tmp_str, "min");
+            return_info(line, tmp_str, tmp_str);
+            dados[slice].header[p_slice[slice].var].dyn_range_min =
+               atof(tmp_str);
+            
+            strcpy(tmp_str, "max");
+            return_info(line, tmp_str, tmp_str);
+            dados[slice].header[p_slice[slice].var].dyn_range_max =
+               atof(tmp_str);
+            
             slice++;
             }
 

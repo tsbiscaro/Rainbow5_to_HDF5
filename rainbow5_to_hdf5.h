@@ -230,9 +230,9 @@ struct data
    unsigned char W[MAX_RAYS][MAX_BINS];
    unsigned char ZDR[MAX_RAYS][MAX_BINS];
    unsigned char RhoHV[MAX_RAYS][MAX_BINS];
-   unsigned int PhiDP[MAX_RAYS][MAX_BINS];
-   unsigned int uPhiDP[MAX_RAYS][MAX_BINS];
-   unsigned int KDP[MAX_RAYS][MAX_BINS];
+   unsigned short int PhiDP[MAX_RAYS][MAX_BINS];
+   unsigned short int uPhiDP[MAX_RAYS][MAX_BINS];
+   unsigned short int KDP[MAX_RAYS][MAX_BINS];
    };
 
 struct params_slice

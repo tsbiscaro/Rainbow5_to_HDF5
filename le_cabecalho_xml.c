@@ -223,6 +223,7 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    if (NULL == texto) return 1;
    else strcpy(date, texto);
    sprintf(s_how[scn].timestamp, "%sT%s.000Z", date, time);
+
    
    texto = retorna_atributos(rawdata, "bins");
    if (NULL == texto) return 1;
@@ -310,29 +311,6 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    if (!strncmp(texto, "3/4", 3)) s_how[scn].unfolding = 2;
    if (!strncmp(texto, "5/4", 3)) s_how[scn].unfolding = 3;
    
-   
-   for (var = 0; var < MAX_VARS; var++)
-      {
-      dynrange = retorna_node(slice[scn], dynrange_vars[var]);
-      if (NULL != dynrange)
-         {
-         texto = retorna_atributos(dynrange, "min");
-         if (NULL == texto) return 1;
-         else dados[scn].header[var].dyn_range_min = atof(texto);
-         
-         texto = retorna_atributos(dynrange, "max");
-         if (NULL == texto) return 1;
-         else dados[scn].header[var].dyn_range_max = atof(texto);         
-         }
-      }
-   
-   dados[scn].header[VAR_PHI].dyn_range_min = 0;
-   dados[scn].header[VAR_PHI].dyn_range_max = 360;
-   dados[scn].header[VAR_UPHI].dyn_range_min = 0;
-   dados[scn].header[VAR_UPHI].dyn_range_max = 360;
-   dados[scn].header[VAR_RHO].dyn_range_min = 0;
-   dados[scn].header[VAR_RHO].dyn_range_max = 1;
-
    /*8/16 bits de acordo com o manual da Gematronik*/
    strcpy(dados[scn].header[VAR_UZ].format, "UV8");
    strcpy(dados[scn].header[VAR_CZ].format, "UV8");
@@ -547,25 +525,8 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
          if (!strncmp(texto, "2/3", 3)) s_how[scn].unfolding = 1;
          if (!strncmp(texto, "3/4", 3)) s_how[scn].unfolding = 2;
          if (!strncmp(texto, "5/4", 3)) s_how[scn].unfolding = 3;
-         }
-      
-      for (var = 0; var < MAX_VARS; var++)
-         {
-         dynrange = retorna_node(slice[scn], dynrange_vars[var]);
-         if (NULL != dynrange)
-            {
-            texto = retorna_atributos(dynrange, "min");
-            if (NULL != texto)
-               dados[scn].header[var].dyn_range_min = atof(texto);
-            
-            texto = retorna_atributos(dynrange, "max");
-            if (NULL != texto)
-               dados[scn].header[var].dyn_range_max = atof(texto);         
-            }
-         }
+         }      
       }
-
-
 
    /* preenche o cabecalho dos rays*/
    for (scn = 0; scn < numele; scn++)

@@ -18,14 +18,14 @@ int main(int argc, char **argv)
    
    if (argc != 2)
       {
-      printf("Uso: %s arquivo de entrada\n", argv[0]);
+      printf("Usage: %s in_file\n", argv[0]);
       return 1;
       }
 
    fp = fopen(argv[1], "r");
    if (NULL == fp)
       {
-      printf("Erro abrindo arquivo %s\n", argv[1]);
+      printf("Error while opening file %s\n", argv[1]);
       return 1;
       }
 
@@ -55,29 +55,29 @@ int main(int argc, char **argv)
    if (le_cabecalho_xml(buffer, &v_how, &v_what, &v_where,
                         s_how, s_what, dados))
       {
-      printf("Erro na leitura do header - Saindo\n");
+      printf("Error reading header - Quitting\n");
       return 1;
       }
 
 
-   printf("Leitura do header ok\n");
+//   printf("Header: ok\n");
    
    
    if (le_dados_blob(argv[1], v_what.sets, &v_how, s_how, dados))
       {
-      printf("Erro na leitura dos dados - Saindo\n");
+      printf("Error reading data - Quitting\n");
       return 1;
       }
    
-   printf("Leitura dos dados ok\n");
+//   printf("Data: ok\n");
    
    if (write_hdf5(&v_how, &v_what, &v_where,
                   s_how, s_what, dados))
       {
-      printf("Erro na escrita do arquivo - Saindo\n");
+      printf("Error writing output file - Quitting\n");
       return 1;
       }
-   printf("Escrita dos dados ok\n");
+//   printf("Output: ok\n");
 
    return 0;
    }

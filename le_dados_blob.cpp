@@ -57,7 +57,7 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
 
    /*verifica a qtd de arquivos*/
    num_arquivos = retorna_ponteiro_arquivos(fin, nome);
-   printf("num arq %d\n", num_arquivos);
+   printf("Found %d files\n", num_arquivos);
    if (0 == num_arquivos)
       {
       return 1;
@@ -483,7 +483,7 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
       }
    if (MAX_VARS == i)
       {
-      printf("Arquivo com nome invalido\n");
+      printf("Invalid file name\n");
       return 0;
       }
    /*separa o nome do arquivo do nome do diretorio, se houver*/
@@ -528,7 +528,7 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
          }
       else
          {
-         printf("Formato invalido\n");
+         printf("Invalid format\n");
          return -1;
          }
       
@@ -537,7 +537,7 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
       
       if (NULL != fp)
          {
-         printf("lendo arquivo %s\n", file);
+         printf("Reading file %s\n", file);
          fin[num_arquivos] = fp;
          num_arquivos++;
          }

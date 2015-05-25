@@ -463,7 +463,7 @@ int retorna_ponteiro_arquivos(FILE *fin[], char *nome)
 
    /*nao leremos o uPhiDP*/
    char *sufixo[MAX_VARS] = {"dBZ", "dBuZ", "V", "W", "ZDR",
-                             "PhiDP", "NAO_LER", "KDP", "RhoHV"};
+                             "PhiDP", "uPhiDP", "KDP", "RhoHV"};
    
    char arquivo[MAX_LINE_SIZE];
    char diretorio[MAX_LINE_SIZE];

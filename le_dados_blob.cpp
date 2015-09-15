@@ -136,6 +136,11 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
             dados[slice].header[p_slice[slice].var].dyn_range_max =
                atof(tmp_str);
             
+            strcpy(tmp_str, "depth");
+            return_info(line, tmp_str, tmp_str);
+            p_slice[slice].depth = (char) atoi(tmp_str);
+
+
             slice++;
             }
 
@@ -192,6 +197,8 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                }
             else
                {
+               depth = p_slice[slice].depth;
+               /*
                if ((VAR_PHI ==  p_slice[slice].var) ||
                    (VAR_UPHI ==  p_slice[slice].var) ||
                    (VAR_KDP ==  p_slice[slice].var))
@@ -202,6 +209,7 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                   {
                   depth = 8;
                   }
+               */
                }
             
          
@@ -345,8 +353,20 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                         }
                      case VAR_ZDR:
                         {
-                        memcpy(&dados[slice].ZDR[0][0], &temp_8[0][0],
-                               sizeof(temp_8));
+                        if (8 == p_slice[slice].depth)
+                           {
+                           s_how[slice].sizeZDR = 8;
+                           strcpy(dados[slice].header[VAR_ZDR].format, "UV8");
+                           memcpy(&dados[slice].ZDR[0][0], &temp_8[0][0],
+                                  sizeof(temp_8));
+                           }
+                        else
+                           {
+                           s_how[slice].sizeZDR = 16;
+                           strcpy(dados[slice].header[VAR_ZDR].format, "UV16");
+                           memcpy(&dados[slice].ZDR_16[0][0], &temp_16[0][0],
+                                  sizeof(temp_16));
+                           }
                         break;
                         }
                      case VAR_PHI:

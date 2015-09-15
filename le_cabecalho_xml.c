@@ -315,7 +315,7 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    strcpy(dados[scn].header[VAR_UZ].format, "UV8");
    strcpy(dados[scn].header[VAR_CZ].format, "UV8");
    strcpy(dados[scn].header[VAR_V].format, "UV8");
-   strcpy(dados[scn].header[VAR_W].format, "UV8");
+   strcpy(dados[scn].header[VAR_W].format, "UV8");   
    strcpy(dados[scn].header[VAR_ZDR].format, "UV8");
    strcpy(dados[scn].header[VAR_PHI].format, "UV16");
    strcpy(dados[scn].header[VAR_UPHI].format, "UV16");
@@ -343,7 +343,7 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    strcpy(dados[scn].header[VAR_RHO].unit, "dimensionless");
 
    /*colocar -1 porque nao estamos convertendo uPhiDP*/
-   s_what[scn].descriptor_count = MAX_VARS - 1;
+   s_what[scn].descriptor_count = MAX_VARS;
 
    if (0 == strcmp(v_what->object, "PELE"))
       {

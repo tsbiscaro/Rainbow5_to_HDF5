@@ -301,6 +301,12 @@ int write_hdf5(struct volume_how *v_how,
                   memcpy(&temp_16[0][0], &dados[i].KDP[0][0],
                          sizeof(temp_16));
                   break;
+                  }
+               case VAR_ZDR:
+                  {
+                  memcpy(&temp_16[0][0], &dados[i].ZDR_16[0][0],
+                         sizeof(temp_16));
+                  break;
                   }               
                default:
                   {

@@ -146,6 +146,7 @@ struct scan_how
    double scan_speed;
    double padding_F[6];
    char timestamp[MAX_STRING];
+   char sizeZDR;
    unsigned char long_pulse;
    unsigned char half_resolution;
    struct ray_header r_header[MAX_RAYS];
@@ -233,6 +234,7 @@ struct data
    unsigned short int PhiDP[MAX_RAYS][MAX_BINS];
    unsigned short int uPhiDP[MAX_RAYS][MAX_BINS];
    unsigned short int KDP[MAX_RAYS][MAX_BINS];
+   unsigned short int ZDR_16[MAX_RAYS][MAX_BINS];
    };
 
 struct params_slice
@@ -243,6 +245,8 @@ struct params_slice
    unsigned int bins;
    /*dbz, dbuz, zdr, v, w, etc*/
    char var;
+   /*record size: 8, 16 or 32*/
+   char depth;
    };
 int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                   struct scan_how s_how[], struct data dados[]);

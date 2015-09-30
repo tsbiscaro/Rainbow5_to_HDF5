@@ -308,6 +308,12 @@ int write_hdf5(struct volume_how *v_how,
                          sizeof(temp_16));
                   break;
                   }               
+               case VAR_RHO:
+                  {
+                  memcpy(&temp_16[0][0], &dados[i].RhoHV_16[0][0],
+                         sizeof(temp_16));
+                  break;
+                  }               
                default:
                   {
                   printf("ERRO: LENDO VARIAVEL DESCONHECIDA %d %d\n",i, j);

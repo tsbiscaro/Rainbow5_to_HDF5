@@ -389,8 +389,20 @@ int le_dados_blob(char *nome, int numele, struct volume_how *v_how,
                         }
                      case VAR_RHO:
                         {
-                        memcpy(&dados[slice].RhoHV[0][0], &temp_8[0][0],
-                               sizeof(temp_8));
+                        if (8 == p_slice[slice].depth)
+                           {
+                           s_how[slice].sizeRho = 8;
+                           strcpy(dados[slice].header[VAR_RHO].format, "UV8");
+                           memcpy(&dados[slice].RhoHV[0][0], &temp_8[0][0],
+                                  sizeof(temp_8));
+                           }
+                        else
+                           {
+                           s_how[slice].sizeRho = 16;
+                           strcpy(dados[slice].header[VAR_RHO].format, "UV16");
+                           memcpy(&dados[slice].RhoHV_16[0][0], &temp_16[0][0],
+                                  sizeof(temp_16));
+                           }
                         break;
                         }
                      default:

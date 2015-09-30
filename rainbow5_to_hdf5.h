@@ -147,6 +147,7 @@ struct scan_how
    double padding_F[6];
    char timestamp[MAX_STRING];
    char sizeZDR;
+   char sizeRho;
    unsigned char long_pulse;
    unsigned char half_resolution;
    struct ray_header r_header[MAX_RAYS];
@@ -235,6 +236,7 @@ struct data
    unsigned short int uPhiDP[MAX_RAYS][MAX_BINS];
    unsigned short int KDP[MAX_RAYS][MAX_BINS];
    unsigned short int ZDR_16[MAX_RAYS][MAX_BINS];
+   unsigned short int RhoHV_16[MAX_RAYS][MAX_BINS];
    };
 
 struct params_slice

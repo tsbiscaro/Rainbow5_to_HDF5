@@ -1,6 +1,6 @@
 #include "rainbow5_to_hdf5.h"
 #include <stdlib.h>
-
+#include <time.h>
 
 int write_hdf5(struct volume_how *v_how,
                struct volume_what *v_what, struct volume_where *v_where,
@@ -10,6 +10,7 @@ int write_hdf5(struct volume_how *v_how,
 
    unsigned int szip_options_mask;
    unsigned int szip_pixels_per_block;
+   time_t epoch;
    
    hid_t file, space, space_header, attr, how, dataspace, mtype;
    hid_t where, what, ftype, dataset, dset;
@@ -29,6 +30,7 @@ int write_hdf5(struct volume_how *v_how,
    unsigned short int temp_16[MAX_RAYS][MAX_BINS];
 
    char filename[1024];
+   struct tm tm;
    
 /*   
    memset(&v_how, 0, sizeof(struct volume_how));
@@ -391,6 +393,19 @@ int write_hdf5(struct volume_how *v_how,
 
       mtype = H5Tcreate (H5T_COMPOUND, sizeof (struct ray_header));
 
+      /*converte a data (texto) para UNIX timestamp*/
+      
+      if (strptime(s_how[i].timestamp, "%Y-%m-%dT%H:%M:%S.000Z", &tm) != NULL )
+         {   
+//         epoch = mktime(&tm);
+         epoch = timegm(&tm);
+         printf("%llu\n", epoch);
+         }
+      
+         else
+         printf("ERRO OBTENDO A DATA DO SCAN\n");
+      
+      
       if (0 != strcmp(v_what->object, "PELE"))
          {
          status = H5Tinsert (mtype, "azimuth_start",
@@ -407,6 +422,9 @@ int write_hdf5(struct volume_how *v_how,
             for (ray = 0; ray < s_how[i].ray_count; ray++)
                {
                s_how[i].r_header[ray].azimuth_stop = s_how[i].r_header[ray].azimuth_start;
+               s_how[i].r_header[ray].timestamp = 1000000 * (unsigned long long) epoch;
+               
+               
                }
             status = H5Tinsert (mtype, "azimuth_stop",
                                 HOFFSET (struct ray_header, azimuth_stop),
@@ -459,7 +477,7 @@ int write_hdf5(struct volume_how *v_how,
 
       status = H5Tinsert (mtype, "timestamp",
                           HOFFSET (struct ray_header, timestamp),
-                          H5T_NATIVE_ULONG);
+                          H5T_NATIVE_ULLONG);
       status = H5Tinsert (mtype, "az_speed",
                           HOFFSET (struct ray_header, az_speed),
                           H5T_NATIVE_DOUBLE);
@@ -500,7 +518,7 @@ int write_hdf5(struct volume_how *v_how,
 
 
       status = H5Tinsert (ftype, "timestamp",
-                          ++offs*sizeof(double), H5T_NATIVE_INT);
+                          ++offs*sizeof(long long int), H5T_NATIVE_ULLONG);
 
       status = H5Tinsert (ftype, "az_speed",
                           ++offs*sizeof(double), H5T_NATIVE_DOUBLE);

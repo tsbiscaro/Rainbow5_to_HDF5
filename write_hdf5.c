@@ -46,7 +46,12 @@ int write_hdf5(struct volume_how *v_how,
    sprintf(filename, "%s-%s.HDF5", v_how->host_name, v_how->arq_original);
    
    /*cria o space*/
-   space = H5Screate_simple (1, &dims, NULL);
+//   space = H5Screate_simple (1, &dims, NULL);
+
+
+   space = H5Screate(H5S_SCALAR);
+
+   
    /*cria o arquivo*/
    fpid = H5Pcreate (H5P_FILE_ACCESS);
    status = H5Pset_libver_bounds (fpid, H5F_LIBVER_LATEST, H5F_LIBVER_LATEST);
@@ -61,8 +66,7 @@ int write_hdf5(struct volume_how *v_how,
    write_attr_text(how, "sw_version", v_how->sw_version);
    write_attr_text(how, "template_name", v_how->template_name);
    write_attr_double(how, "azimuth_beam", v_how->beamwidth);
-   write_attr_double(how, "elevation_beam", v_how->beamwidth);
-   
+   write_attr_double(how, "elevation_beam", v_how->beamwidth);   
    /*fim da gravacao do grupo HOW*/
    status = H5Gclose(how);
 
@@ -106,6 +110,8 @@ int write_hdf5(struct volume_how *v_how,
                           H5P_DEFAULT);
 
       how = H5Gcreate(scan[i], "how", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+      extended = H5Gcreate(how, "extended", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+      status = H5Gclose(extended);
 
       write_attr_uint(how, "PRF", s_how[i].PRF);
       
@@ -264,6 +270,10 @@ int write_hdf5(struct volume_how *v_how,
                }
             
             dataspace = H5Screate_simple (2, dims_data, NULL);
+
+//            dataspace = H5Screate(H5S_SCALAR);
+
+            
             dataset = H5Dcreate (scan[i], nome_moment, H5T_STD_U8LE, dataspace,
                                  H5P_DEFAULT, plist_id, H5P_DEFAULT);
             status = H5Dwrite (dataset, H5T_NATIVE_UCHAR, H5S_ALL, H5S_ALL,
@@ -445,7 +455,17 @@ int write_hdf5(struct volume_how *v_how,
                              HOFFSET (struct ray_header, elevation_stop),
                              H5T_NATIVE_DOUBLE);
          }
+
+
+      status = H5Tinsert (mtype, "timestamp",
+                          HOFFSET (struct ray_header, timestamp),
+                          H5T_NATIVE_ULONG);
+      status = H5Tinsert (mtype, "az_speed",
+                          HOFFSET (struct ray_header, az_speed),
+                          H5T_NATIVE_DOUBLE);
+
       
+/*      
       if (9999 != s_how[i].blob_timestamp_id)
          {   
          status = H5Tinsert (mtype, "timestamp",
@@ -453,7 +473,7 @@ int write_hdf5(struct volume_how *v_how,
                              H5T_NATIVE_INT);
          }
 
-      
+*/     
       if (9999 != s_how[i].blob_txpower_id)
          {
          status = H5Tinsert (mtype, "txpower",
@@ -476,6 +496,13 @@ int write_hdf5(struct volume_how *v_how,
       status = H5Tinsert (ftype, "elevation_start",
                           ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
       status = H5Tinsert (ftype, "elevation_stop",
+                          ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
+
+
+      status = H5Tinsert (ftype, "timestamp",
+                          ++offs*sizeof(double), H5T_NATIVE_INT);
+
+      status = H5Tinsert (ftype, "az_speed",
                           ++offs*sizeof(double), H5T_NATIVE_DOUBLE);
       
       if (9999 != s_how[i].blob_timestamp_id)
@@ -539,7 +566,9 @@ void write_attr_text(hid_t loc_id,char *name, char *value)
    hid_t attr_id;
    const hsize_t dims[1] = {1};
    hid_t memtype;
-   hid_t dataspace_id = H5Screate_simple(1, dims, NULL);
+//   hid_t dataspace_id = H5Screate_simple(1, dims, NULL);
+
+   hid_t dataspace_id = H5Screate(H5S_SCALAR);
 
    memtype = H5Tcopy(H5T_C_S1);   
    H5Tset_size(memtype, H5T_VARIABLE);
@@ -554,7 +583,11 @@ void write_attr_double(hid_t loc_id,char *name,double value)
    {//write atribute double
    herr_t status;
    const hsize_t len=1;
-   hid_t dataspace_id = H5Screate_simple(1, &len, NULL);
+//   hid_t dataspace_id = H5Screate_simple(1, &len, NULL);
+
+   hid_t dataspace_id = H5Screate(H5S_SCALAR);
+
+   
    hid_t attr_id=H5Acreate(loc_id,name, H5T_NATIVE_DOUBLE, dataspace_id,
                            H5P_DEFAULT, H5P_DEFAULT);
    
@@ -567,7 +600,8 @@ void write_attr_uint(hid_t loc_id,char *name,int value)
    {//write atribute unsignet int
    herr_t status; 
    const hsize_t len = 1;
-   hid_t dataspace_id = H5Screate_simple(1, &len, NULL);
+//   hid_t dataspace_id = H5Screate_simple(1, &len, NULL);
+   hid_t dataspace_id = H5Screate(H5S_SCALAR);
    hid_t attr_id=H5Acreate(loc_id, name, H5T_NATIVE_UINT, dataspace_id,
                            H5P_DEFAULT, H5P_DEFAULT);
    status = H5Awrite(attr_id, H5T_NATIVE_UINT, &value);

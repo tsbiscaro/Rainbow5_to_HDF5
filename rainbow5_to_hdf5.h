@@ -110,9 +110,10 @@ struct ray_header
    double azimuth_stop;
    double elevation_start;
    double elevation_stop;
+   double az_speed;
    unsigned int timestamp;
    unsigned int txpower;
-   unsigned int padding_UI[2];
+//   unsigned int padding_UI[2];
    };
 
 

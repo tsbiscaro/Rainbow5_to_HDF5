@@ -399,7 +399,6 @@ int write_hdf5(struct volume_how *v_how,
          {   
 //         epoch = mktime(&tm);
          epoch = timegm(&tm);
-         printf("%llu\n", epoch);
          }
       
          else
@@ -408,6 +407,10 @@ int write_hdf5(struct volume_how *v_how,
       
       if (0 != strcmp(v_what->object, "PELE"))
          {
+         for (ray = 0; ray < s_how[i].ray_count; ray++)
+            {
+            s_how[i].r_header[ray].timestamp = 1000000 * (unsigned long long) epoch;
+            }
          status = H5Tinsert (mtype, "azimuth_start",
                              HOFFSET (struct ray_header, azimuth_start),
                              H5T_NATIVE_DOUBLE);
@@ -422,9 +425,6 @@ int write_hdf5(struct volume_how *v_how,
             for (ray = 0; ray < s_how[i].ray_count; ray++)
                {
                s_how[i].r_header[ray].azimuth_stop = s_how[i].r_header[ray].azimuth_start;
-               s_how[i].r_header[ray].timestamp = 1000000 * (unsigned long long) epoch;
-               
-               
                }
             status = H5Tinsert (mtype, "azimuth_stop",
                                 HOFFSET (struct ray_header, azimuth_stop),

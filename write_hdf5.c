@@ -136,7 +136,9 @@ int write_hdf5(struct volume_how *v_how,
       status = H5Awrite(attr, H5T_NATIVE_UCHAR, &s_how[i].long_pulse);
       H5Aclose(attr);
 
-      write_attr_uint(how, "range_samples", s_how[i].range_samples);
+//      write_attr_uint(how, "range_samples", s_how[i].range_samples);
+      write_attr_uint(how, "range_samples", 1);
+      
       write_attr_uint(how, "ray_count", s_how[i].ray_count);
       write_attr_uint(how, "time_samples", s_how[i].time_samples);
       write_attr_uint(how, "unfolding", s_how[i].unfolding);

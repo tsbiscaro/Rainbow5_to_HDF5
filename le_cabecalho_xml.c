@@ -327,10 +327,10 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    strcpy(dados[scn].header[VAR_V].moment, "V");
    strcpy(dados[scn].header[VAR_W].moment, "W");
    strcpy(dados[scn].header[VAR_ZDR].moment, "ZDR");
-   strcpy(dados[scn].header[VAR_PHI].moment, "PhiDP");
-   strcpy(dados[scn].header[VAR_UPHI].moment, "uPhiDP");
+   strcpy(dados[scn].header[VAR_PHI].moment, "PHIDP");
+   strcpy(dados[scn].header[VAR_UPHI].moment, "UPHIDP");
    strcpy(dados[scn].header[VAR_KDP].moment, "KDP");
-   strcpy(dados[scn].header[VAR_RHO].moment, "RhoHV");
+   strcpy(dados[scn].header[VAR_RHO].moment, "RHOHV");
    
    strcpy(dados[scn].header[VAR_UZ].unit, "dBZ");
    strcpy(dados[scn].header[VAR_CZ].unit, "dBZ");

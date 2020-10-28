@@ -493,13 +493,13 @@ int write_hdf5(struct volume_how *v_how,
                              H5T_NATIVE_INT);
          }
 
-*/     
       if (9999 != s_how[i].blob_txpower_id)
          {
          status = H5Tinsert (mtype, "txpower",
                              HOFFSET (struct ray_header, txpower),
                              H5T_NATIVE_INT);
          }
+*/     
       
          /*
       * Create the compound datatype for the file.  Because the standard
@@ -530,7 +530,7 @@ int write_hdf5(struct volume_how *v_how,
          status = H5Tinsert (ftype, "timestamp",
                              ++offs*sizeof(double), H5T_NATIVE_INT);
          }
-
+/*
       if (9999 != s_how[i].blob_txpower_id)
          {
          if (9999 != s_how[i].blob_timestamp_id)
@@ -544,7 +544,7 @@ int write_hdf5(struct volume_how *v_how,
                                 ++offs*sizeof(double), H5T_NATIVE_INT);
             }
          }
-      
+*/      
       /*
       * Create dataspace.  Setting maximum size to NULL sets the maximum
       * size to be the current size.

@@ -92,7 +92,7 @@ struct ray_header_complete
    double host_throughput;
    double pc_gain;
    double padding_F[3];
-   unsigned long int timestamp;
+   unsigned long long int timestamp;
    unsigned long int tm_stop;
    unsigned long int ifd_power_flags;
    unsigned long int adc_overflow_flags;
@@ -111,7 +111,7 @@ struct ray_header
    double elevation_start;
    double elevation_stop;
    double az_speed;
-   unsigned int timestamp;
+   unsigned long long int timestamp;
    unsigned int txpower;
 //   unsigned int padding_UI[2];
    };

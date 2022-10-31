@@ -7,7 +7,6 @@ int write_hdf5(struct volume_how *v_how,
                struct scan_how s_how[], struct scan_what s_what[],
                struct data dados[])
    {
-
    unsigned int szip_options_mask;
    unsigned int szip_pixels_per_block;
    time_t epoch;
@@ -30,6 +29,12 @@ int write_hdf5(struct volume_how *v_how,
    unsigned short int temp_16[MAX_RAYS][MAX_BINS];
 
    char filename[1024];
+   char unfolding[1024];
+   char nyquist_str[1024];
+
+   float nyquist = 0.0;
+   
+   
    struct tm tm;
    
 /*   
@@ -112,8 +117,6 @@ int write_hdf5(struct volume_how *v_how,
                           H5P_DEFAULT);
 
       how = H5Gcreate(scan[i], "how", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-      extended = H5Gcreate(how, "extended", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-      status = H5Gclose(extended);
 
       write_attr_uint(how, "PRF", s_how[i].PRF);
       
@@ -169,6 +172,28 @@ int write_hdf5(struct volume_how *v_how,
       write_attr_text(how, "timestamp", s_how[i].timestamp);
       printf("slice %02d, timestamp: %s\n", i,s_how[i].timestamp);
       
+      extended = H5Gcreate(how, "extended", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+      for (j = 0; j < MAX_VARS; j++)
+         {
+         if (VAR_V == j)
+            {
+            nyquist = dados[i].header[j].dyn_range_max;
+            break;
+            }
+         }
+
+      memset(unfolding, 0, sizeof(unfolding));
+      if (0 == s_how[i].unfolding) write_attr_text(extended, "unfolding_str", "Non");
+      if (1 == s_how[i].unfolding) write_attr_text(extended, "unfolding_str", "2/3");
+      if (2 == s_how[i].unfolding) write_attr_text(extended, "unfolding_str", "3/4");
+      if (3 == s_how[i].unfolding) write_attr_text(extended, "unfolding_str", "4/5");
+
+      memset(nyquist_str, 0, sizeof(nyquist_str));
+      sprintf(nyquist_str, "%f", nyquist);
+      write_attr_text(extended, "nyquist_velocity", nyquist_str);
+      
+      status = H5Gclose(extended);
 
       /*fim da gravacao do grupo HOW*/
       status = H5Gclose(how);
@@ -369,7 +394,7 @@ int write_hdf5(struct volume_how *v_how,
                          dados[i].header[j].dyn_range_max);
          write_attr_double(dataset, "dyn_range_min",
                          dados[i].header[j].dyn_range_min);
-         
+
          write_attr_text(dataset, "format", dados[i].header[j].format);
          write_attr_text(dataset, "moment", dados[i].header[j].moment);
          write_attr_text(dataset, "unit", dados[i].header[j].unit);

@@ -535,6 +535,7 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
          {
          s_how[scn].r_header[ray].elevation_start = s_how[scn].elevation;
          s_how[scn].r_header[ray].elevation_stop = s_how[scn].elevation;
+         s_how[scn].r_header[ray].az_speed = s_how[scn].scan_speed;
          }
       }
    

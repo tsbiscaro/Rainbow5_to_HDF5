@@ -307,8 +307,8 @@ int le_cabecalho_xml(char *buffer, struct volume_how *v_how,
    texto = retorna_valor(slice[scn], "stagger");
    if (NULL == texto) return 1;
    if (!strncmp(texto, "Non", 3)) s_how[scn].unfolding = 0;
-   if (!strncmp(texto, "2/3", 3)) s_how[scn].unfolding = 1;
-   if (!strncmp(texto, "3/4", 3)) s_how[scn].unfolding = 2;
+   if (!strncmp(texto, "3/2", 3)) s_how[scn].unfolding = 1;
+   if (!strncmp(texto, "4/3", 3)) s_how[scn].unfolding = 2;
    if (!strncmp(texto, "5/4", 3)) s_how[scn].unfolding = 3;
    
    /*8/16 bits de acordo com o manual da Gematronik*/

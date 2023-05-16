@@ -58,10 +58,15 @@ int write_hdf5(struct volume_how *v_how,
 
    space = H5Screate(H5S_SCALAR);
 
+
    
    /*cria o arquivo*/
    fpid = H5Pcreate (H5P_FILE_ACCESS);
+   #ifdef H5F_LIBVER_18
+   status = H5Pset_libver_bounds (fpid, H5F_LIBVER_18, H5F_LIBVER_LATEST);
+   #else
    status = H5Pset_libver_bounds (fpid, H5F_LIBVER_V18, H5F_LIBVER_LATEST);
+   #endif
    file = H5Fcreate(filename, H5F_ACC_TRUNC, H5P_DEFAULT, fpid);
    
    /**********************escreve o HOW do volume************************/

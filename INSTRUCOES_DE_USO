@@ -2,15 +2,16 @@ Thiago Biscaro - thiago.biscaro@inpe.br
 
 como compilar:
 chmod +x Makefile.sh
+./Makefile.sh
 
 como usar:
-toda vez que um terminal novo for aberto é necessário utilizar o comando:
+toda vez que um terminal novo for aberto Ã© necessÃ¡rio utilizar o comando:
 
 ulimit -s unlimited
 
 para aumentar o tamanho do stack
 
-Os dados rainbow tem 1 variável por arquivo, ex.:
+Os dados rainbow tem 1 variÃ¡vel por arquivo, ex.:
 
 2018020323300300dBuZ.vol
 2018020323300300dBZ.vol
@@ -22,8 +23,8 @@ Os dados rainbow tem 1 variável por arquivo, ex.:
 2018020323300300PhiDP.vol
 2018020323300300uPhiDP.vol
 
-todos esses arquivos têm o mesmo sufixo com o horário (2018020323300300). Para convertê-los para um único arquivo HDF5-GAMIC, executar o comando:
+todos esses arquivos tÃªm o mesmo sufixo com o horÃ¡rio (2018020323300300). Para convertÃª-los para um Ãºnico arquivo HDF5-GAMIC, executar o comando:
 
 ./rainbow5_to_hdf5 2018020323300300dBZ (selecione o arquivo dBZ.vol)
 
-o conversor encontrará todos os arquivos com a mesma data e converterá em 1 único arquivo HDF5 com todas as variáveis.
+o conversor encontrarÃ¡ todos os arquivos com a mesma data e converterÃ¡ em 1 Ãºnico arquivo HDF5 com todas as variÃ¡veis.
